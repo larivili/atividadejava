@@ -1,1 +1,205 @@
-# atividadejava
+Atividade Java - Lista de Produtos pedida pelo Prof.Petri
+Segue o código:
+
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Scanner;
+
+public class ListaProdutos {
+
+    public static void inserirProdutos(String[][] matriz, int linhas, int colunas) {
+        Scanner scanner = new Scanner(System.in);
+        int linha;
+
+        mostrarProdutos(matriz, linhas, colunas);
+        do {
+            System.out.println("Informe onde você deseja inserir o produto com valores de 1 à " + linhas);
+            linha = scanner.nextInt();
+        } while (linha < 1 || linha > linhas);
+
+        System.out.println("Insira o nome do produto: ");
+        matriz[linha - 1][0] = scanner.next();
+        System.out.println("Insira a descrição do produto: ");
+        matriz[linha - 1][1] = scanner.next();
+        System.out.println("Insira a quantidade de produtos: ");
+        matriz[linha - 1][2] = scanner.next();
+        System.out.println("Insira o valor do produto: ");
+        matriz[linha - 1][3] = scanner.next();
+        System.out.println("Produto adicionado.");
+    }
+
+    public static void mostrarProdutos(String[][] matriz, int linhas, int colunas) {
+        System.out.println("Produto | Descrição | Quantidade | Valor");
+        for (int i = 0; i < linhas; i++) {
+            System.out.print((i + 1) + " - ");
+            for (int j = 0; j < colunas; j++) {
+                System.out.print(matriz[i][j] + " | ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void calcularValor(String[][] matriz, int linhas) {
+        float valorFinal = 0.0f;
+        for (int i = 0; i < linhas; i++) {
+            if (matriz[i][0] != null) {
+                valorFinal += Float.parseFloat(matriz[i][2]) * Float.parseFloat(matriz[i][3]);
+            }
+        }
+        System.out.println("Valor final da lista de compras: " + valorFinal + " R$");
+    }
+
+    public static void removerProduto(String[][] matriz, int linhas, String nomeProduto) {
+        boolean encontrado = false;
+        for (int i = 0; i < linhas; i++) {
+            if (matriz[i][0] != null && matriz[i][0].equals(nomeProduto)) {
+                encontrado = true;
+                matriz[i][0] = null;
+                matriz[i][1] = null;
+                matriz[i][2] = null;
+                matriz[i][3] = null;
+            }
+        }
+        if (encontrado) {
+            System.out.println("Produto removido.");
+        } else {
+            System.out.println("Produto não encontrado.");
+        }
+    }
+
+    public static void buscarProduto(String[][] matriz, int linhas, String nomeProduto) {
+        boolean encontrado = false;
+        for (int i = 0; i < linhas; i++) {
+            if (matriz[i][0] != null && matriz[i][0].equalsIgnoreCase(nomeProduto)) {
+                System.out.println("Detalhes do produto:");
+                System.out.println("Nome: " + matriz[i][0]);
+                System.out.println("Descrição: " + matriz[i][1]);
+                System.out.println("Quantidade: " + matriz[i][2]);
+                System.out.println("Valor: " + matriz[i][3]);
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            System.out.println("Produto não encontrado na lista.");
+        }
+    }
+
+    public static void atualizarQuantidadeProduto(String[][] matriz, int linhas, String nomeProduto) {
+        boolean encontrado = false;
+        Scanner scanner = new Scanner(System.in);
+
+        for (int i = 0; i < linhas; i++) {
+            if (matriz[i][0] != null && matriz[i][0].equalsIgnoreCase(nomeProduto)) {
+                System.out.println("Detalhes do produto:");
+                System.out.println("Nome: " + matriz[i][0]);
+                System.out.println("Descrição: " + matriz[i][1]);
+                System.out.println("Quantidade atual: " + matriz[i][2]);
+
+                System.out.println("Insira a nova quantidade: ");
+                matriz[i][2] = scanner.next();
+
+                System.out.println("Quantidade atualizada.");
+                encontrado = true;
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            System.out.println("Produto não encontrado na lista.");
+        }
+    }
+
+    public static void ordenarPorNome(String[][] matriz, int linhas) {
+        Arrays.sort(matriz, Comparator.comparing(p -> p[0]));
+        System.out.println("Lista de compras ordenada por nome:");
+        mostrarProdutos(matriz, linhas, 4);
+    }
+
+    public static void main(String[] args) {
+        int produtos, opcao;
+        int colunas = 4;
+        Scanner scanner = new Scanner(System.in);
+        String nomeProduto;
+
+        do {
+            System.out.println("Insira a quantidade de produtos que serão inseridos na sua lista de compras:");
+            produtos = scanner.nextInt();
+            if (produtos <= 0) {
+                System.out.println("Quantidade inválida. Insira um valor maior que zero.");
+            }
+        } while (produtos <= 0);
+
+        String[][] lista = new String[produtos][colunas];
+
+        do {
+            System.out.println("Escolha uma opção: \n 1 - Mostrar lista de compras. \n 2 - Inserir produtos na lista de compras. \n 3 - Calcular valor dos produtos da lista de compras. \n 4 - Remover produto da lista de compras. \n 5 - Buscar produto na lista de compras. \n 6 - Atualizar quantidade de um produto. \n 7 - Ordenar lista de compras por nome. \n 0 - Sair.");
+            opcao = scanner.nextInt();
+            switch (opcao) {
+                case 0:
+                    break;
+                case 1:
+                    if (produtos > 0) {
+                        mostrarProdutos(lista, produtos, colunas);
+                    } else {
+                        System.out.println("A lista de compras está vazia.");
+                    }
+                    break;
+                case 2:
+                    if (produtos < lista.length) {
+                        inserirProdutos(lista, produtos, colunas);
+                        produtos++;
+                    } else {
+                        System.out.println("A lista de compras já está cheia.");
+                    }
+                    break;
+                case 3:
+                    if (produtos > 0) {
+                        calcularValor(lista, produtos);
+                    } else {
+                        System.out.println("A lista de compras está vazia.");
+                    }
+                    break;
+                case 4:
+                    if (produtos > 0) {
+                        System.out.println("Insira o produto a ser removido.");
+                        nomeProduto = scanner.next();
+                        removerProduto(lista, produtos, nomeProduto);
+                    } else {
+                        System.out.println("A lista de compras está vazia.");
+                    }
+                    break;
+                case 5:
+                    if (produtos > 0) {
+                        System.out.println("Insira o nome do produto:");
+                        nomeProduto = scanner.next();
+                        buscarProduto(lista, produtos, nomeProduto);
+                    } else {
+                        System.out.println("A lista de compras está vazia.");
+                    }
+                    break;
+                case 6:
+                    if (produtos > 0) {
+                        System.out.println("Insira o nome do produto:");
+                        nomeProduto = scanner.next();
+                        atualizarQuantidadeProduto(lista, produtos, nomeProduto);
+                    } else {
+                        System.out.println("A lista de compras está vazia.");
+                    }
+                    break;
+                case 7:
+                    if (produtos > 0) {
+                        ordenarPorNome(lista, produtos);
+                    } else {
+                        System.out.println("A lista de compras está vazia.");
+                    }
+                    break;
+
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        } while (opcao != 0);
+    }
+}
+
